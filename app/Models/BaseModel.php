@@ -43,8 +43,7 @@ class BaseModel extends Model
 
     public function copy_data($table_modal, $key, $value, $new_value)
     {
-        $list_search = $table_modal::where($key, $value)
-            ->where('is_deleted', false)->get()->toarray();
+        $list_search = $table_modal::where($key, $value)->get()->toarray();
 
         foreach ($list_search as $search) {
             if (!empty($search)) {
@@ -93,7 +92,7 @@ class BaseModel extends Model
             }
             // check if record none exits to create
             $search = $table_modal::where($key1, $id)
-                ->where($key2, $obj['id'])->where('is_deleted', false)->get()->toarray();
+                ->where($key2, $obj['id'])->get()->toarray();
 
             if(empty($search)) {
                 $modal = new $table_modal;
@@ -107,7 +106,7 @@ class BaseModel extends Model
         }
 
         // find and remove old record
-        $old_record = $table_modal::where($key1,$id)->where('is_deleted', false)->get()->toarray();
+        $old_record = $table_modal::where($key1,$id)->get()->toarray();
         if(!empty($old_record)) {
             foreach ($old_record as $old) {
                 if (!in_array($old[$key2], $list_obj)) {
@@ -150,7 +149,7 @@ class BaseModel extends Model
         }
 
         // find and remove old record
-        $old_record = $table_modal::where($key,$id)->where('is_deleted', false)->get()->toarray();
+        $old_record = $table_modal::where($key,$id)->get()->toarray();
         if(!empty($old_record)) {
             foreach ($old_record as $old) {
                 if (!in_array($old['id'], $list_obj))

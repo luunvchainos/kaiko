@@ -1,49 +1,27 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
-class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
+class Company extends BaseModel
 {
 
-    use Authenticatable, CanResetPassword, Notifiable;
+    use Notifiable;
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    const REGEX = '/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/';
-    protected $table = 'users';
-    protected $fillable = ['id','company_code', 'role_type', 'username','email','password','first_name','last_name','comment',
+    protected $table = 'companies';
+    protected $fillable = ['id', 'code', 'name', 'status', 'thanks_address', 'like_address', 'lock_number', 'address_manager',
         'created_at', 'updated_at', 'last_update_by', 'created_by'];
 
-    protected  $field_require = ['email', 'first_name', 'last_name', 'kana_first_name', 'kana_last_name', 'role_type', 'company_code' ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['password', 'remember_token'];
-
-	/**
-	 * One to one relation
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function company()
-    {
-        return $this->belongsTo('App\Models\Company')->withDefault();
-    }
-
+    protected  $field_require = [ 'code' ];
 
     /** Validation Data
      * @param null $id
@@ -63,12 +41,10 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
         $result['kana_first_name'] = 'required|katakana';
         $result['kana_last_name'] = 'required|katakana';
         $result['phone'] = 'required|digits:10';
-        $result['password'] = 'min:8|nullable';
         $result['co_password'] = 'same:password|nullable';
 
         return $result;
     }
-
 
 	/**
 	 * @param $input
@@ -137,16 +113,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
         $query = $query->where('is_deleted', false)->orderBy('id', 'desc')->paginate($pagination);
 
 	    return $query;
-    }
-
-
-    /**
-     * @param string $name
-     * @return AuthenticatableContract|null
-     */
-    public static function getUserInfoLogin($name = '')
-    {
-        return $name ? Auth::user()[$name] : Auth::user();
     }
 
 }

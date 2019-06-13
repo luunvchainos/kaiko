@@ -17,18 +17,18 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->integer('role_id');
             $table->integer('company_id');
+            $table->integer('created_by');
+            $table->integer('last_update_by');
             $table->string('username', 30);
             $table->string('password', 60);
             $table->string('first_name', 20);
             $table->string('last_name', 20);
-            $table->string('kana_first_name', 20);
-            $table->string('kana_last_name',20);
             $table->string('image_path',200);
             $table->string('address', 100);
             $table->string('email');
             $table->string('phone', 12);
             $table->text('comment')->nullable();
-            $table->boolean('is_enable')->default(true);
+            $table->boolean('is_deleted')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -51,7 +51,6 @@ class CreateUsersTable extends Migration
         Schema::table('users', function(Blueprint $table) {
             $table->dropForeign('users_company_id_foreign');
         });
-
         Schema::drop('users');
     }
 }
